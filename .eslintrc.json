@@ -6,7 +6,8 @@
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/jsx-runtime" //fixed React is not imported in JSX error given by eslint-plugin-react
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
