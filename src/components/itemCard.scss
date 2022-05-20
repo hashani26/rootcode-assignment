@@ -20,7 +20,12 @@
         color: aliceblue;
         border-radius: 5px;
     }
+    .no-dispaly{
+       height: 200px;
+       width: auto;
+    }
 }
+
 .ant-popover-title{
     display: none;
 }

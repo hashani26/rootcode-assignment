@@ -1,5 +1,5 @@
 import { Card, Button, Popover } from 'antd'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import './itemCard.scss'
 
 type ItemCard = {
@@ -15,12 +15,16 @@ type ItemCard = {
 };
 
 export const ItemCard: FC<ItemCard> = (props) => {
+    const [imgErr, setImgErr] = useState(false)
     return (
         <Card
-            className="item-card"
+            className={'item-card'}
             hoverable
             style={{ width: 240 }}
-            cover={<img alt="example" src={props.details.image} />}
+            cover={imgErr?
+                <div className='no-dispaly'><i>Cannot display image</i></div>:
+                <img onError={() => setImgErr(true)} alt="example" src={props.details.image} />
+            }
         >
             <div>
                 <div className="title">
