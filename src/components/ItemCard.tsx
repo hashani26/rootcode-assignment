@@ -28,7 +28,7 @@ export const ItemCard: FC<ItemCard> = (props) => {
                         {props.name.substr(0, 25)}
                     </Popover>
                 </div>
-                <div className="price">{props.details.price}</div>
+                <div className="price">$ {props.details.price}</div>
                 <Button>Add to cart</Button>
             </div>
         </Card>
