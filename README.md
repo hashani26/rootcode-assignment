@@ -46,8 +46,8 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 
-1.card
-2.loading
-3. filter
-4. error handling
+1.  card -done
+2. loading - done
+3. filter - 
+4. error handling - done
 5. cart and redux

@@ -1,5 +1,7 @@
 import { Card, Button, Popover } from 'antd'
 import { FC, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { increment } from '../store/reducer'
 import './itemCard.scss'
 
 type ItemCard = {
@@ -16,6 +18,8 @@ type ItemCard = {
 
 export const ItemCard: FC<ItemCard> = (props) => {
     const [imgErr, setImgErr] = useState(false)
+    const dispatch = useDispatch()
+
     return (
         <Card
             className={'item-card'}
@@ -33,7 +37,7 @@ export const ItemCard: FC<ItemCard> = (props) => {
                     </Popover>
                 </div>
                 <div className="price">$ {props.details.price}</div>
-                <Button>Add to cart</Button>
+                <Button onClick={() => dispatch(increment())}>Add to cart</Button>
             </div>
         </Card>
     )

@@ -1,8 +1,10 @@
 import { useEffect, useState, Fragment } from 'react'
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import { ItemCard } from './components/ItemCard'
 import { Filter } from './components/Filter'
-import { Col, Row, Spin } from 'antd'
+import { Col, Row, Spin, Badge } from 'antd'
+import { useSelector } from 'react-redux'
+import { RootState  } from './store'
 import axios from 'axios'
 import './App.scss'
 
@@ -35,6 +37,7 @@ function App() {
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(false)
     const [filterType, setFilterType] = useState({ size: '', type: '' })
+    const total = useSelector((state: RootState) => state.cartTotal.total)
 
     useEffect(() => {
         getItems()
@@ -88,6 +91,8 @@ function App() {
                         selectFilter={(val: string) => onFilterChange(val, 'size')}
                     />
                 </Col>
+                <Col xs={12} sm={12} md={1} lg={1} xl={1}>
+                    <Badge count={total}><ShoppingCartOutlined /></Badge></Col>
             </Row>
             <Row gutter={[16, 16]}>
                 {loading ? (
