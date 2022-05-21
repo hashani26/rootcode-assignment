@@ -18,3 +18,5 @@ You will also see any lint errors in the console.
 3. filter - done
 4. error handling - done
 5. cart total and redux - done
+
+ref - https://www.youtube.com/watch?v=d1r0aK5awWk

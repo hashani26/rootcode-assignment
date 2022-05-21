@@ -1,8 +1,8 @@
-import { useEffect, useState, Fragment } from 'react'
 import { LoadingOutlined, ShoppingCartOutlined } from '@ant-design/icons'
+import { useEffect, useState, Fragment } from 'react'
+import { Col, Row, Spin, Badge, Button } from 'antd'
 import { ItemCard } from './components/ItemCard'
 import { Filter } from './components/Filter'
-import { Col, Row, Spin, Badge } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState  } from './store'
 import axios from 'axios'
@@ -21,14 +21,12 @@ type ItemCard = {
 };
 
 const sizes = [
-    { value: 'all', label: 'All' },
     { value: 'xsmall', label: 'xs' },
     { value: 'small', label: 's' },
     { value: 'large', label: 'l' },
 ]
 
 const types = [
-    { value: 'all', label: 'All' },
     { value: 't-shirt', label: 't-shirt' },
     { value: 'dress shirts', label: 'dress shirts' },
 ]
@@ -36,7 +34,8 @@ const types = [
 function App() {
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(false)
-    const [filterType, setFilterType] = useState({ size: '', type: '' })
+    const [ reset, setReset] = useState(false)
+    const [filterType, setFilterType] = useState({ size: null, type: null })
     const total = useSelector((state: RootState) => state.cartTotal.total)
 
     useEffect(() => {
@@ -62,23 +61,20 @@ function App() {
         params: string,
         selectedFilter: keyof ItemCard['details']
     ) {
-        if (params === 'all') {
-            getItems()
-        } else {
-            setFilterType(() => ({ ...filterType, type: params }))
-            setItems(
-                items.filter(
-                    (item: ItemCard) => item.details[selectedFilter] === params
-                )
+        setFilterType(() => ({ ...filterType, [selectedFilter]: params }))
+        setItems(
+            items.filter(
+                (item: ItemCard) => item.details[selectedFilter] === params
             )
-        }
+        )
     }
 
     return (
         <div className="App">
             <Row className="filter" gutter={[16, 16]}>
-                <Col offset={16} xs={12} sm={3} md={3} lg={3} xl={3}>
+                <Col offset={12} xs={12} sm={3} md={3} lg={3} xl={3}>
                     <Filter
+                        value={reset? null : filterType.type}
                         type="type"
                         typeArr={types}
                         selectFilter={(val: string) => onFilterChange(val, 'type')}
@@ -86,13 +82,18 @@ function App() {
                 </Col>
                 <Col xs={12} sm={12} md={3} lg={3} xl={3}>
                     <Filter
+                        value={reset? null : filterType.size}
                         type="size"
                         typeArr={sizes}
                         selectFilter={(val: string) => onFilterChange(val, 'size')}
                     />
                 </Col>
+                <Col xs={12} sm={12} md={3} lg={3} xl={3}>
+                    <Button onClick={() => {setReset(true), getItems()}}>Reset</Button>
+                </Col>
                 <Col xs={12} sm={12} md={1} lg={1} xl={1}>
-                    <Badge count={total}><ShoppingCartOutlined /></Badge></Col>
+                    <Badge count={total}><ShoppingCartOutlined /></Badge>
+                </Col>
             </Row>
             <Row gutter={[16, 16]}>
                 {loading ? (
