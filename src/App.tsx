@@ -8,17 +8,17 @@ import { RootState  } from './store'
 import axios from 'axios'
 import './App.scss'
 
-type ItemCard = {
-  id: string;
-  name: string;
-  details: {
-    price: number;
-    size: string;
-    tag: string;
-    image: string;
-    type: string;
-  };
-};
+interface ItemCardI{
+    id: string;
+    name: string;
+    details: {
+      price: number;
+      size: string;
+      tag: string;
+      image: string;
+      type: string;
+    };
+}
 
 const sizes = [
     { value: 'xsmall', label: 'xs' },
@@ -42,31 +42,59 @@ function App() {
         getItems()
     }, [])
 
-    async function getItems() {
+    async function getItems(params?: string,
+        selectedFilter?: keyof ItemCardI['details']) {
         try {
             setLoading(true)
             const response = await axios.get(
                 'https://my-json-server.typicode.com/prasadhewage/ecommerce/shipments'
             )
-            setItems(response.data)
+            if(params && selectedFilter){
+                if(selectedFilter === 'type' && filterType.size === null){
+                    setItems(response.data.filter(
+                        (item: ItemCardI) => (item.details[selectedFilter] === params) 
+                    ))
+                }
+                if(selectedFilter === 'size' && filterType.type === null){
+                    setItems(response.data.filter(
+                        (item: ItemCardI) => (item.details[selectedFilter] === params) 
+                    ))
+                }
+                if(selectedFilter === 'type' && filterType.size){
+                    setItems(response.data.filter(
+                        (item: ItemCardI) => (item.details[selectedFilter] === params && item.details.size === filterType.size) 
+                    ))
+                } else if(selectedFilter === 'size' && filterType.type){
+                    setItems(response.data.filter(
+                        (item: ItemCardI) => (item.details[selectedFilter] === params && item.details.type === filterType.type) 
+                    ))
+                }
+            } else {
+                setItems(response.data)
+            } 
             setLoading(false)
         } catch (error) {
             setItems([])
+            setReset(true)
             setLoading(false)
+            setFilterType({ size: null, type: null })
             console.error(error)
         }
     }
 
     function onFilterChange(
         params: string,
-        selectedFilter: keyof ItemCard['details']
+        selectedFilter: keyof ItemCardI['details']
     ) {
-        setFilterType(() => ({ ...filterType, [selectedFilter]: params }))
-        setItems(
-            items.filter(
-                (item: ItemCard) => item.details[selectedFilter] === params
-            )
-        )
+        setFilterType({ ...filterType, [selectedFilter]: params })
+        getItems(params, selectedFilter)
+        setReset(false)
+    }
+
+    function resetFilter() {
+        setReset(true)
+        setFilterType({ size: null, type: null })
+        getItems()
     }
 
     return (
@@ -89,7 +117,7 @@ function App() {
                     />
                 </Col>
                 <Col xs={12} sm={12} md={3} lg={3} xl={3}>
-                    <Button onClick={() => {setReset(true), getItems()}}>Reset</Button>
+                    <Button onClick={resetFilter}>Reset</Button>
                 </Col>
                 <Col xs={12} sm={12} md={1} lg={1} xl={1}>
                     <Badge count={total}><ShoppingCartOutlined /></Badge>
@@ -105,7 +133,7 @@ function App() {
                 ) : items.length === 0 ? (
                     <Col span={24}>No data</Col>
                 ) : (
-                    items.map((item: ItemCard) => {
+                    items.map((item: ItemCardI) => {
                         return (
                             <Col key={item.id} xs={24} sm={12} md={8} lg={6} xl={4}>
                                 <Fragment key={item.id}>
